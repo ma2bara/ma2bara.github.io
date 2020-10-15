@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>サンプル</title>
+</head>
+<body>
+<script>
+
+function getJSON() {
+  var req = new XMLHttpRequest();
+  req.onreadystatechange = function() {
+    if(req.readyState == 4 && req.status == 200) {
+	var obj = JSON.parse(req.responseText);
+	for (var i = 0; i < obj.length; i++) {
+		document.write(obj[i].tag_name)
+		document.write("   が     ")
+		document.write(obj[i].assets[0].download_count)
+		document.write(" 回ダウンロードされました")
+		document.write("<br>")
+	}
+	document.write("<br>---------------------------------------<br>以下 RAW DATA <br><br>");
+	document.write(req.responseText);
+    }
+  };
+  req.open("GET", "https://api.github.com/repos/morikatron/toio-sdk-for-unity/releases", false);
+  req.send(null);
+}
+
+
+document.write("unitypackageダウンロード数 ( ");
+dd = new Date();
+document.write(dd.toLocaleString());
+document.write(" ) <br><br>");
+getJSON()
+
+</script>
+</body>
+</html>
