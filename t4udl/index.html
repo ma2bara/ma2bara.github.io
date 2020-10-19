@@ -4,21 +4,87 @@
 <title>t4u dl counter</title>
 </head>
 <body>
+	T4U 本日の unitypackage ダウンロード数<br>
+	<textarea id="multilinetext" cols="48" rows="5"></textarea>
+	<br>
+	<button onclick="copyTextAreaToClipboard(0)">Copy to clipboard</button>
+	<br><br>
+	T4U 過去のダウンロード数記録(ブラウザのlocalstorageに保存しています)<br>
+	<textarea id="multilinetext_localstorage" cols="48" rows="5"></textarea>
+	<br>
+	<button onclick="copyTextAreaToClipboard(1)">Copy to clipboard</button>
+	<button onclick="clear_multilinetext_localstorage()">Clear localstorage</button>
+	<br><br>
 <script>
-
+	function clear_multilinetext_localstorage() {
+		localStorage.setItem('multilinetext_localstorage', '');
+		var copyTarget = document.getElementById("multilinetext_localstorage");
+		copyTarget.value = '';
+		alert('localstorageをクリアしました');
+	}
+function copyTextAreaToClipboard(which) {
+	// コピー対象をJavaScript上で変数として定義する
+	var copyTarget;
+	if(which==0){
+		copyTarget = document.getElementById("multilinetext");
+	} else {
+		copyTarget = document.getElementById("multilinetext_localstorage");
+	}
+	// コピー対象のテキストを選択する
+	copyTarget.select();
+	// 選択しているテキストをクリップボードにコピーする
+	document.execCommand("Copy");
+	// コピーをお知らせする
+	alert("クリップボードにコピーしました");
+}
 function getJSON() {
   var req = new XMLHttpRequest();
   req.onreadystatechange = function() {
     if(req.readyState == 4 && req.status == 200) {
 	var obj = JSON.parse(req.responseText);
+	var txt = ""
+	var dd = new Date();
 	for (var i = 0; i < obj.length; i++) {
-		document.write(obj[i].tag_name)
-		document.write("   が     ")
-		document.write(obj[i].assets[0].download_count)
-		document.write(" 回ダウンロードされました")
-		document.write("<br>")
+		// document.write(obj[i].tag_name)
+		// document.write("   が     ")
+		// document.write(obj[i].assets[0].download_count)
+		// document.write(" 回ダウンロードされました")
+		// document.write("<br>")
+		txt = txt + dd.toLocaleString()+"	";
+		txt = txt + obj[i].tag_name+"	";
+		txt = txt + obj[i].assets[0].download_count + "\n";
 	}
-	document.write("<br>---------------------------------------<br>以下 RAW DATA <br><br>");
+	var copyTarget = document.getElementById("multilinetext");
+	copyTarget.value = txt;
+
+	multilinetext_localstorage = localStorage.getItem('multilinetext_localstorage');
+	multilinetext_localstorage += txt;
+	localStorage.setItem('multilinetext_localstorage', multilinetext_localstorage);
+	var copyTarget = document.getElementById("multilinetext_localstorage");
+	copyTarget.value = multilinetext_localstorage;
+	// document.write("<br>------------- for graph -------------<br>");
+	// document.write("<pre><code>")
+	// for (var i = 0; i < obj.length; i++) {
+	// 	document.write(dd.toLocaleString()+"\t");
+	// 	document.write(obj[i].tag_name+"\t")
+	// 	document.write(obj[i].assets[0].download_count)
+	// 	document.write("<br>")
+	// }
+	// document.write("</code></pre>")
+
+	// document.write("<br><br><br>")
+
+
+	// var txt = "<pre><code>"
+	// for (var i = 0; i < obj.length; i++) {
+	// 	txt = txt + dd.toLocaleString()+"\t";
+	// 	txt = txt + obj[i].tag_name+"\t";
+	// 	txt = txt + obj[i].assets[0].download_count;
+	// 	txt = txt + "<br>";
+	// }
+	// txt = txt + "</code></pre>"
+	// document.write(txt)
+	document.write("<br>------------- raw data -------------<br>");
 	document.write(req.responseText);
     }
   };
@@ -27,10 +93,10 @@ function getJSON() {
 }
 
 
-document.write("unitypackageダウンロード数 ( ");
-dd = new Date();
-document.write(dd.toLocaleString());
-document.write(" ) <br><br>");
+//document.write("unitypackageダウンロード数 ( ");
+// dd = new Date();
+// document.write(dd.toLocaleString());
+// document.write(" ) <br><br>");
 getJSON()
 
 </script>
