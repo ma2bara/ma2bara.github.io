@@ -58,6 +58,9 @@ function getJSON() {
 	copyTarget.value = txt;
 
 	multilinetext_localstorage = localStorage.getItem('multilinetext_localstorage');
+	if (multilinetext_localstorage == null) {
+		multilinetext_localstorage = ""
+	}
 	multilinetext_localstorage += txt;
 	localStorage.setItem('multilinetext_localstorage', multilinetext_localstorage);
 	var copyTarget = document.getElementById("multilinetext_localstorage");
